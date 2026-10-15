@@ -9,7 +9,7 @@ from kubernetes.client.exceptions import ApiException
 
 
 NAMESPACE = os.getenv("KUBERNETES_NAMESPACE", "ml-platform")
-WORKER_IMAGE = os.getenv("WORKER_IMAGE", "workflow-worker:0.1.1")
+WORKER_IMAGE = os.getenv("WORKER_IMAGE", "workflow-worker:0.1.3")
 
 
 def get_batch_api() -> client.BatchV1Api:

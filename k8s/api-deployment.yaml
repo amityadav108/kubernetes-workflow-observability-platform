@@ -16,7 +16,7 @@ spec:
       serviceAccountName: workflow-api
       containers:
         - name: api
-          image: workflow-api:0.2.0
+          image: workflow-api:0.3.2
           imagePullPolicy: Never
           ports:
             - name: http
