@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-alerts
+  namespace: ml-platform
+data:
+  alerts.yml: |
+    groups:
+      - name: workflow-api-alerts
+        rules:
+          - alert: WorkflowAPIDown
+            expr: up{job="workflow-api"} == 0
+            for: 1m
+            labels:
+              severity: critical
+            annotations:
+              summary: "Workflow API is down"
+              description: "Prometheus has been unable to scrape the Workflow API for at least one minute."
+
+          - alert: WorkflowAPIHighErrorRate
+            expr: |
+              (
+                sum(rate(http_requests_total{job="workflow-api", status="5xx"}[5m]))
+                /
+                clamp_min(sum(rate(http_requests_total{job="workflow-api"}[5m])), 0.001)
+              ) > 0.05
+            for: 5m
+            labels:
+              severity: warning
+            annotations:
+              summary: "Workflow API error rate is high"
+              description: "More than 5% of API requests are returning HTTP 5xx responses."
+
+          - alert: WorkflowAPIHighLatency
+            expr: |
+              histogram_quantile(
+                0.95,
+                sum by (le) (
+                  rate(http_request_duration_seconds_bucket{job="workflow-api"}[5m])
+                )
+              ) > 1
+            for: 5m
+            labels:
+              severity: warning
+            annotations:
+              summary: "Workflow API latency is high"
+              description: "The 95th percentile API response time has exceeded one second for five minutes."
