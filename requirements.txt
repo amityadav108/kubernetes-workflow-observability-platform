@@ -3,4 +3,5 @@ uvicorn[standard]
 prometheus-fastapi-instrumentator
 pytest
 httpx
-kubernetes
+Kubernetes
+prometheus-client
